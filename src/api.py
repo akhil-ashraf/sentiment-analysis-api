@@ -1,4 +1,6 @@
 from fastapi import FastAPI
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 from pydantic import BaseModel
 import joblib
 import os
@@ -19,6 +21,9 @@ app = FastAPI(
     version="1.0.0"
 )
 
+# Mount static files
+app.mount("/static", StaticFiles(directory="src/static"), name="static")
+
 # Define request/response models
 class ReviewRequest(BaseModel):
     text: str
@@ -30,15 +35,7 @@ class SentimentResponse(BaseModel):
 
 @app.get("/")
 def read_root():
-    return {
-        "message": "Welcome to Movie Sentiment Analysis API!",
-        "status": "running",
-        "endpoints": {
-            "predict": "/predict",
-            "health": "/health",
-            "docs": "/docs"
-        }
-    }
+    return FileResponse('src/static/index.html')
 
 @app.get("/health")
 def health_check():
