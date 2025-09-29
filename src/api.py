@@ -37,12 +37,20 @@ class SentimentResponse(BaseModel):
 def read_root():
     return FileResponse('src/static/index.html')
 
+@app.head("/")
+def head_root():
+    return {}
+
 @app.get("/health")
 def health_check():
     return {
         "status": "healthy",
         "model_loaded": model is not None
     }
+
+@app.head("/health")
+def head_health():
+    return {}
 
 @app.post("/predict", response_model=SentimentResponse)
 def predict_sentiment(request: ReviewRequest):
